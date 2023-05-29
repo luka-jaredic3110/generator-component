@@ -1,5 +1,5 @@
 export default {
-    en: {
-      exampleProp: 'Example prop'
-    }
-  };
+  en: {
+    exampleProp: 'Example prop',
+  },
+};
