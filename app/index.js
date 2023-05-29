@@ -1,79 +1,110 @@
 const Generator = require("yeoman-generator");
 
+function snakeToCapitalCase(snakeCaseWords) {
+  const words = snakeCaseWords.split("-");
+  for (let i = 0; i < words.length; i++) {
+    const oldWord = words[i];
+    const newWord = oldWord[0].toUpperCase() + oldWord.slice(1).toLowerCase();
+    words[i] = newWord;
+  }
+  return words.join("");
+}
+
 module.exports = class extends Generator {
   constructor(args, opts) {
     super(args, opts);
     this.argument("name", { type: String, required: true });
   }
 
-  // Helpers
-  _getFolderName() {
+  // getters
+  get folderName() {
     return this.options.name.replaceAll("-", "_");
   }
 
-  _getTagName() {
+  get tagName() {
     return `${this.config.get("prefix")}-${this.options.name}`;
   }
 
-  _getClassName() {
-    const wordsOfName = this.options.name.split("-");
-
-    for (let i = 0; i < wordsOfName.length; i++) {
-      const oldWord = wordsOfName[i];
-      const newWord = oldWord[0].toUpperCase() + oldWord.slice(1).toLowerCase();
-      wordsOfName[i] = newWord;
-    }
-
-    return wordsOfName.join("");
+  get className() {
+    return snakeToCapitalCase(this.options.name);
   }
 
-  _getApplicationElementSource() {
+  get applicationElementSource() {
     return this.config.get("prefix") === "ef"
       ? "../application_element/element.js"
       : "@effectivastudio/lit-components";
   }
 
+  get templateArgs() {
+    return {
+      tagName: this.tagName,
+      className: this.className,
+      folderName: this.folderName,
+      applicationElementSource: this.applicationElementSource,
+    };
+  }
+
+  get elementPath() {
+    return `components/${this.folderName}/element.js`;
+  }
+
+  get storiesPath() {
+    return `components/${this.folderName}/${this.folderName}.stories.js`;
+  }
+
+  get specPath() {
+    return `components/${this.folderName}/spec.js`;
+  }
+
+  get stylePath() {
+    return `components/${this.folderName}/style.lit.css`;
+  }
+
+  get translationsPath() {
+    return `components/${this.folderName}/translations.js`;
+  }
+
   // Generator
+  initialization() {
+    if (!this.config.get("prefix")) {
+      throw new Error(
+        "Prefix undefined, you most likely haven't created .yo-rc.json file in the project root."
+      );
+    }
+  }
+
   writing() {
     // add element.js
     this.fs.copyTpl(
-      this.templatePath("element.js"), // from
-      this.destinationPath(`components/${this._getFolderName()}/element.js`), // to
-      {
-        className: this._getClassName(),
-        tagName: this._getTagName(),
-        applicationElementSource: this._getApplicationElementSource(),
-      } // args
+      this.templatePath("element.js"),
+      this.destinationPath(this.elementPath),
+      this.templateArgs
     );
 
     // add {element}.stories.js
     this.fs.copyTpl(
-      this.templatePath("element.stories.js"), // from
-      this.destinationPath(
-        `components/${this._getFolderName()}/${this._getFolderName()}.stories.js`
-      ), // to
-      { className: this._getClassName(), tagName: this._getTagName() } // args
+      this.templatePath("element.stories.js"),
+      this.destinationPath(this.storiesPath),
+      this.templateArgs
     );
 
     // add spec.js
     this.fs.copyTpl(
-      this.templatePath("spec.js"), // from
-      this.destinationPath(`components/${this._getFolderName()}/spec.js`), // to
-      { className: this._getClassName(), tagName: this._getTagName() } // args
+      this.templatePath("spec.js"),
+      this.destinationPath(this.specPath),
+      this.templateArgs
     );
 
     // add style.lit.css
     this.fs.copyTpl(
-      this.templatePath("style.lit.css"), // from
-      this.destinationPath(`components/${this._getFolderName()}/style.lit.css`) // to
+      this.templatePath("style.lit.css"),
+      this.destinationPath(this.stylePath)
     );
 
     // add translations.js
     this.fs.copyTpl(
-      this.templatePath("translations.js"), // from
-      this.destinationPath(
-        `components/${this._getFolderName()}/translations.js`
-      ) // to
+      this.templatePath("translations.js"),
+      this.destinationPath(this.translationsPath)
     );
   }
 };
