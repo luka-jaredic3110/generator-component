@@ -1,0 +1,16 @@
+{
+  "name": "generator-component",
+  "version": "0.1.0",
+  "description": "A generator for lit component scaffolding (element.js, spec.js, style.lit.css, component.stories.js)",
+  "files": [
+    "app"
+  ],
+  "keywords": [
+    "yeoman-generator"
+  ],
+  "author": "Luka Jaredic",
+  "license": "ISC",
+  "dependencies": {
+    "yeoman-generator": "^5.9.0"
+  }
+}
