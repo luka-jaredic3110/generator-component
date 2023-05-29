@@ -1,5 +1,5 @@
 {
-  "name": "generator-component",
+  "name": "generator-efcomponent",
   "version": "0.1.0",
   "description": "A generator for lit component scaffolding (element.js, spec.js, style.lit.css, component.stories.js)",
   "files": [
