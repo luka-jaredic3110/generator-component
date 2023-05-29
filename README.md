@@ -6,7 +6,7 @@ A generator for lit components
 
 - npm install -g yo
 - npm install -D generator-efcomponent
-- npm add .yo-rc.json at the root of the project with the following contents and change the value of prefix to whatever matches your projects prefix:
+- add .yo-rc.json **at the root of the project** with the following contents and change the value of prefix to whatever matches your projects prefix:
 
 {
 "generator-efcomponent": { "prefix": "ef" }
