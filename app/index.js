@@ -1,4 +1,5 @@
 const Generator = require("yeoman-generator");
+const nativeFs = require("fs");
 
 function snakeToCapitalCase(snakeCaseWords) {
   const words = snakeCaseWords.split("-");
@@ -64,7 +65,15 @@ module.exports = class extends Generator {
     return `components/${this.folderName}/translations.js`;
   }
 
-  // Generator
+  // helpers
+  _appendToIndex() {
+    nativeFs.appendFileSync(
+      this.destinationPath("index.js"),
+      `export * from './${this.elementPath}';\r`
+    );
+  }
+
+  // generator
   initialization() {
     if (!this.config.get("prefix")) {
       throw new Error(
@@ -106,5 +115,8 @@ module.exports = class extends Generator {
       this.templatePath("translations.js"),
       this.destinationPath(this.translationsPath)
     );
+
+    // add element export to index.js
+    this._appendToIndex();
   }
 };
